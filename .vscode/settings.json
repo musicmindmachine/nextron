@@ -4,5 +4,13 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "[Signed Dark Pro]": {
+      "editorPane.background": "#000000"
+    },
+    "activityBar.background": "#5A1124",
+    "titleBar.activeBackground": "#7D1832",
+    "titleBar.activeForeground": "#FEFBFC"
+  }
 }

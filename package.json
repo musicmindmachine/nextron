@@ -35,14 +35,14 @@
     "nextron": "bin/nextron.js"
   },
   "scripts": {
-    "predev": "npm run build",
+    "predev": "pnpm run build",
     "dev": "node dev",
-    "lint": "concurrently \"npm:lint:*\"",
+    "lint": "concurrently \"pnpm:lint:*\"",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --check .",
     "prebuild": "rimraf bin",
     "build": "rollup -c --bundleConfigAsCjs",
-    "prepublishOnly": "NODE_ENV=production npm run build",
+    "prepublishOnly": "set NODE_ENV=production&&pnpm run build",
     "prepare": "husky"
   },
   "dependencies": {
@@ -74,6 +74,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@types/eslint": "^9.6.1",
     "@types/fs-extra": "^11.0.4",
+    "@types/next": "^9.0.0",
     "@types/node": "^20.14.2",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
