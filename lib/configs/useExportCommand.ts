@@ -14,12 +14,32 @@ export const findNextJsConfig = async (): Promise<string> => {
   const configExists = async (configFileName: string) =>
     await fs.pathExists(path.join(nextConfigPathDir, configFileName))
 
-  if (await configExists('next.config.js'))
-    return path.join(nextConfigPathDir, 'next.config.js')
+  const filePathToURL = (filePath: string) => {
+    return new URL(`file:///${path.join(nextConfigPathDir, filePath)}`).href
+  }
+
+  // Priority for nextron config
+  if (await configExists('next.config.nextron.js'))
+    return filePathToURL('next.config.nextron.js')
+  else if (await configExists('next.config.nextron.mjs'))
+    return filePathToURL('next.config.nextron.mjs')
+  else if (await configExists('next.config.nextron.cjs'))
+    return filePathToURL('next.config.nextron.cjs')
+  // Priority for electron config
+  else if (await configExists('next.config.electron.js'))
+    return filePathToURL('next.config.electron.js')
+  else if (await configExists('next.config.electron.mjs'))
+    return filePathToURL('next.config.electron.mjs')
+  else if (await configExists('next.config.electron.cjs'))
+    return filePathToURL('next.config.electron.cjs')
+  // Default next.js config
+  else if (await configExists('next.config.js'))
+    return filePathToURL('next.config.js')
   else if (await configExists('next.config.mjs'))
-    return path.join(nextConfigPathDir, 'next.config.mjs')
+    return filePathToURL('next.config.mjs')
   else if (await configExists('next.config.cjs'))
-    return path.join(nextConfigPathDir, 'next.config.cjs')
+    return filePathToURL('next.config.cjs')
+  // Fallback to next.config.js
   else return path.join(nextConfigPathDir, 'next.config.js')
 }
 
@@ -29,12 +49,17 @@ type NextConfigBase = {
 }
 
 const importNextConfig = async (): Promise<NextConfigBase> => {
-  const nextConfigPath = await findNextJsConfig()
-  if (!nextConfigPath) {
+  const nectConfigURL = await findNextJsConfig()
+  if (!nectConfigURL) {
     logger.error('next.config.js not found.')
     process.exit(1)
   }
-  return (await import(nextConfigPath)) as NextConfigBase
+  const fileName = new URL(nectConfigURL).pathname.split('/').pop()
+  console.log(`✓  Using [${fileName}] as next.config file`)
+
+  const cfg = await import(nectConfigURL)
+  console.log('Next.Js Config: ', cfg.default as NextConfigBase)
+  return cfg.default as NextConfigBase
 }
 
 export const useExportCommand = async (): Promise<boolean> => {
